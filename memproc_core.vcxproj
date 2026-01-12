@@ -108,7 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\Driver.cpp" />
-    <ClCompile Include="sources\EPT.cpp" />
+    <ClCompile Include="sources\ept.cpp" />
     <ClCompile Include="sources\gdt.cpp" />
     <ClCompile Include="sources\Globals.cpp" />
     <ClCompile Include="sources\HookHelper.cpp" />

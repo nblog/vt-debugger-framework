@@ -1,4 +1,4 @@
-#include "Driver.h"
+ï»¿#include "Driver.h"
 #include "poolmanager.h"
 #include "Globals.h"
 #include "cpuid.h"
@@ -112,14 +112,14 @@ void free_vmm_context()
 	//g_vmm_context = nullptr;
 }
 
-//·ÖÅäg_vmm_contextÉÏÏÂÎÄ
+//åˆ†é…g_vmm_contextä¸Šä¸‹æ–‡
 bool allocate_vmm_context()
 {
 	__cpuid_info cpuid_reg = { 0 };
 
 	//
 	// Allocate virtual cpu context for every logical core
-	// ÎªÃ¿¸öÂß¼­´¦ÀíÆ÷·ÖÅäĞéÄâ CPU ÉÏÏÂÎÄ
+	// ä¸ºæ¯ä¸ªé€»è¾‘å¤„ç†å™¨åˆ†é…è™šæ‹Ÿ CPU ä¸Šä¸‹æ–‡
 	//
 	//g_vmm_context.processor_count = KeQueryActiveProcessorCountEx(ALL_PROCESSOR_GROUPS);
 	g_vmm_context.processor_count = KeQueryActiveProcessorCount(NULL);
@@ -127,21 +127,21 @@ bool allocate_vmm_context()
 	g_vmm_context.vcpu = allocate_pool<__vcpu*>(arr_size);
 	if (g_vmm_context.vcpu == nullptr)
 	{
-		DbgPrint("[memproc_core] vCPU½á¹¹Ìå·ÖÅäÊ§°Ü.\n");
+		DbgPrint("[memproc_core] vCPUç»“æ„ä½“åˆ†é…å¤±è´¥.\n");
 		return false;
 	}
 	RtlSecureZeroMemory(g_vmm_context.vcpu, arr_size);
 
 	//
 	// Build mtrr map for physcial memory caching informations
-	// ¹¹½¨ mtrr Ó³ÉäÀ´´æ´¢ÎïÀíÄÚ´æ»º´æĞÅÏ¢
+	// æ„å»º mtrr æ˜ å°„æ¥å­˜å‚¨ç‰©ç†å†…å­˜ç¼“å­˜ä¿¡æ¯
 	//
 	ept::build_mtrr_map();
 
-	//ÌáÇ°ÔÚguestÀï·ÖÅäÁËÄÚ´æ
+	//æå‰åœ¨guesté‡Œåˆ†é…äº†å†…å­˜
 	if (pool_manager::initialize() == false)
 	{
-		DbgPrint("[memproc_core] Ô¤·ÖÅäÄÚ´æÊ§°Ü.\n");
+		DbgPrint("[memproc_core] é¢„åˆ†é…å†…å­˜å¤±è´¥.\n");
 		return false;
 	}
 
@@ -149,7 +149,7 @@ bool allocate_vmm_context()
 	{
 		if (init_vcpu(&g_vmm_context.vcpu[iter]) == false)
 		{
-			DbgPrint("[memproc_core] ³õÊ¼»¯vCPUÊ§°Ü.\n");
+			DbgPrint("[memproc_core] åˆå§‹åŒ–vCPUå¤±è´¥.\n");
 			return false;
 		}
 	}
@@ -159,14 +159,14 @@ bool allocate_vmm_context()
 	__cpuid((int*)&cpuid_reg.eax, 0);
 	g_vmm_context.highest_basic_leaf = cpuid_reg.eax;
 
-	//´´½¨hostÒ³±í
-	//½«ËùÓĞÎïÀíÄÚ´æÓ³Éäµ½ÎÒÃÇµÄµØÖ·¿Õ¼ä
+	//åˆ›å»ºhosté¡µè¡¨
+	//å°†æ‰€æœ‰ç‰©ç†å†…å­˜æ˜ å°„åˆ°æˆ‘ä»¬çš„åœ°å€ç©ºé—´
 	create_host_page_tables();
 
 	return true;
 }
 
-//·ÖÅävcpu½á¹¹ÄÚ´æ
+//åˆ†é…vcpuç»“æ„å†…å­˜
 bool init_vcpu(__vcpu* vcpu)
 {
 
@@ -181,7 +181,7 @@ bool init_vcpu(__vcpu* vcpu)
 	vcpu->vcpu_bitmaps.io_bitmap_a = allocate_pool<unsigned __int8*>(PAGE_SIZE);
 	if (vcpu->vcpu_bitmaps.io_bitmap_a == nullptr)
 	{
-		DbgPrint("[memproc_core] IO-bitmap ²»ÄÜÓ³Éä.");
+		DbgPrint("[memproc_core] IO-bitmap ä¸èƒ½æ˜ å°„.");
 		return false;
 	}
 	RtlSecureZeroMemory(vcpu->vcpu_bitmaps.io_bitmap_a, PAGE_SIZE);
@@ -190,7 +190,7 @@ bool init_vcpu(__vcpu* vcpu)
 	vcpu->vcpu_bitmaps.io_bitmap_b = allocate_pool<unsigned __int8*>(PAGE_SIZE);
 	if (vcpu->vcpu_bitmaps.io_bitmap_b == nullptr)
 	{
-		DbgPrint("[memproc_core] IO-bitmap ²»ÄÜÓ³Éä.");
+		DbgPrint("[memproc_core] IO-bitmap ä¸èƒ½æ˜ å°„.");
 		return false;
 	}
 	RtlSecureZeroMemory(vcpu->vcpu_bitmaps.io_bitmap_b, PAGE_SIZE);
@@ -202,7 +202,7 @@ bool init_vcpu(__vcpu* vcpu)
 	vcpu->ept_state = allocate_pool<__ept_state>();
 	if (vcpu->ept_state == nullptr)
 	{
-		DbgPrint("[memproc_core] Ept State ²»ÄÜÓ³Éä.");
+		DbgPrint("[memproc_core] Ept State ä¸èƒ½æ˜ å°„.");
 		return false;
 	}
 	RtlSecureZeroMemory(vcpu->ept_state, sizeof(__ept_state));
@@ -214,19 +214,19 @@ bool init_vcpu(__vcpu* vcpu)
 
 	//
 	// Initialize ept structure
-	// ³õÊ¼»¯ ept ½á¹¹
+	// åˆå§‹åŒ– ept ç»“æ„
 	//
 	if (ept::initialize(*vcpu->ept_state) == false)
 	{
-		DbgPrint("[memproc_core] ³õÊ¼»¯ Ept ½á¹¹Ê§°Ü.");
+		DbgPrint("[memproc_core] åˆå§‹åŒ– Ept ç»“æ„å¤±è´¥.");
 		return false;
 	}
 
-	DbgPrint("[memproc_core] vCPU %llX ³õÊ¼»¯³É¹¦", vcpu);
+	DbgPrint("[memproc_core] vCPU %llX åˆå§‹åŒ–æˆåŠŸ", vcpu);
 	return true;
 }
 
-//µ÷½Ú¿ØÖÆ¼Ä´æÆ÷ cr4 cr0À´ÆôÓÃvmxÄ£Ê½
+//è°ƒèŠ‚æ§åˆ¶å¯„å­˜å™¨ cr4 cr0æ¥å¯ç”¨vmxæ¨¡å¼
 void adjust_control_registers()
 {
 	__cr4 cr4;
@@ -248,7 +248,7 @@ void adjust_control_registers()
 	__writecr4(cr4.all);
 	_enable();
 
-	//ÉèÖÃIA32_FEATURE_CONTROL¼Ä´æÆ÷µÄbit0 bit2Ö§³Ö¿ªÆôvmxÄ£Ê½
+	//è®¾ç½®IA32_FEATURE_CONTROLå¯„å­˜å™¨çš„bit0 bit2æ”¯æŒå¼€å¯vmxæ¨¡å¼
 	__ia32_feature_control_msr feature_msr = { 0 };
 	feature_msr.all = __readmsr(IA32_FEATURE_CONTROL);
 
@@ -269,7 +269,7 @@ void create_host_page_tables()
 	ULONG returnLength = 0;
 	PVOID processInfo = NULL;
 
-	// µÚÒ»´Îµ÷ÓÃ»ñÈ¡ËùĞèÄÚ´æ´óĞ¡
+	// ç¬¬ä¸€æ¬¡è°ƒç”¨è·å–æ‰€éœ€å†…å­˜å¤§å°
 	status = NtQuerySystemInformation(
 		SystemProcessInformation,
 		NULL,
@@ -283,7 +283,7 @@ void create_host_page_tables()
 		return;
 	}
 
-	// ·ÖÅä·Ç·ÖÒ³ÄÚ´æ
+	// åˆ†é…éåˆ†é¡µå†…å­˜
 	processInfo = ExAllocatePool2(
 		POOL_FLAG_NON_PAGED,
 		returnLength,
@@ -295,7 +295,7 @@ void create_host_page_tables()
 		return;
 	}
 
-	// µÚ¶ş´Îµ÷ÓÃ»ñÈ¡½ø³ÌĞÅÏ¢
+	// ç¬¬äºŒæ¬¡è°ƒç”¨è·å–è¿›ç¨‹ä¿¡æ¯
 	status = NtQuerySystemInformation(
 		SystemProcessInformation,
 		processInfo,
@@ -309,7 +309,7 @@ void create_host_page_tables()
 		return;
 	}
 
-	// ±éÀú½ø³ÌÁĞ±í
+	// éå†è¿›ç¨‹åˆ—è¡¨
 	PSYSTEM_PROCESS_INFORMATION pEntry = (PSYSTEM_PROCESS_INFORMATION)processInfo;
 	do 
 	{
@@ -331,12 +331,12 @@ void create_host_page_tables()
 				break;
 			}
 		}
-		// ÒÆ¶¯µ½ÏÂÒ»¸öÌõÄ¿
+		// ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªæ¡ç›®
 		if (pEntry->NextEntryOffset == 0) break;
 		pEntry = (PSYSTEM_PROCESS_INFORMATION)((PUCHAR)pEntry + pEntry->NextEntryOffset);
 	} while (TRUE);
 
-	// ÇåÀí×ÊÔ´
+	// æ¸…ç†èµ„æº
 	if (processInfo) 
 	{
 		ExFreePool(processInfo);
@@ -349,49 +349,49 @@ bool initalize_vcpu(unsigned int iter)
 	unsigned __int64 processor_number = iter;
 	__vcpu* vcpu = &g_vmm_context.vcpu[processor_number];
 
-	//µ÷½Ú¿ØÖÆ¼Ä´æÆ÷ cr4 cr0À´ÆôÓÃvmxÄ£Ê½
+	//è°ƒèŠ‚æ§åˆ¶å¯„å­˜å™¨ cr4 cr0æ¥å¯ç”¨vmxæ¨¡å¼
 	adjust_control_registers();
-	//½øÈëvmxÄ£Ê½
+	//è¿›å…¥vmxæ¨¡å¼
 	if (!hv::enter_vmx_operation(vcpu->vmxon))  
 	{
-		DbgPrint("[memproc_core] vCPU %lld ÎŞ·¨ÉèÖÃĞéÄâ»¯.", processor_number);
+		DbgPrint("[memproc_core] vCPU %lld æ— æ³•è®¾ç½®è™šæ‹ŸåŒ–.", processor_number);
 		return false;
 	}
 
 	if (!hv::load_vmcs_pointer(vcpu->vmcs))
 	{
-		DbgPrint("[memproc_core] ¼ÓÔØVMCSÇøÓòÊ§°Ü.\n");
+		DbgPrint("[memproc_core] åŠ è½½VMCSåŒºåŸŸå¤±è´¥.\n");
 		return false;
 	}
 
-	//´´½¨hostµÄidtºÍgdt
+	//åˆ›å»ºhostçš„idtå’Œgdt
 	hv::prepare_external_structures(vcpu);
 	vcpu->vcpu_status.vmx_on = true;
-	DbgPrint("[memproc_core] vCPU %lld ÒÑ¾­³É¹¦½øÈëĞéÄâ»¯²Ù×÷Ä£Ê½.\n", processor_number);
+	DbgPrint("[memproc_core] vCPU %lld å·²ç»æˆåŠŸè¿›å…¥è™šæ‹ŸåŒ–æ“ä½œæ¨¡å¼.\n", processor_number);
 
-	//ÅäÖÃvmcsÇøÓò
+	//é…ç½®vmcsåŒºåŸŸ
 	fill_vmcs(vcpu, 0);
 	vcpu->vcpu_status.vmm_launched = true;
 
-	//´ÓGUEST_RIPÖ¸¶¨µÄÎ»ÖÃ¼ÌĞøÖ´ĞĞ
-	//ÔËĞĞvmĞéÄâ»ú
+	//ä»GUEST_RIPæŒ‡å®šçš„ä½ç½®ç»§ç»­æ‰§è¡Œ
+	//è¿è¡Œvmè™šæ‹Ÿæœº
 	if (!hv::vm_launch()) 
 	{
 		vcpu->vmexit_info.instruction_error = hv::vmread(VM_INSTRUCTION_ERROR);
-		DbgPrint("[memproc_core] vCPU %lld ¼ÓÔØĞéÄâ»¯Ê§°Ü", vcpu->vmexit_info.instruction_error);
+		DbgPrint("[memproc_core] vCPU %lld åŠ è½½è™šæ‹ŸåŒ–å¤±è´¥", vcpu->vmexit_info.instruction_error);
 		vcpu->vcpu_status.vmm_launched = false;
 		vcpu->vcpu_status.vmx_on = false;
-		//ÍË³övmxÄ£Ê½
+		//é€€å‡ºvmxæ¨¡å¼
 		__vmx_off();  
 		return false;
 	}
 
-	DbgPrint("[memproc_core] vCPU %lld ¼ÓÔØĞéÄâ»¯³É¹¦.\n", processor_number);
+	DbgPrint("[memproc_core] vCPU %lld åŠ è½½è™šæ‹ŸåŒ–æˆåŠŸ.\n", processor_number);
 	return true;
 }
 
 
-// Æô¶¯ VT µÄ¶àºËäÖÈ¾ DPC »Øµ÷
+// å¯åŠ¨ VT çš„å¤šæ ¸æ¸²æŸ“ DPC å›è°ƒ
 VOID VtLoadProc( _In_ struct _KDPC* Dpc, _In_opt_ PVOID DeferredContext, _In_opt_ PVOID SystemArgument1, _In_opt_ PVOID SystemArgument2)
 {
 	UNREFERENCED_PARAMETER(Dpc);
@@ -409,7 +409,7 @@ bool vmm_init()
 {
 	if (allocate_vmm_context() == false)
 	{
-		DbgPrint("·ÖÅävmmÉÏÏÂÎÄÊ§°Ü.\n");
+		DbgPrint("åˆ†é…vmmä¸Šä¸‹æ–‡å¤±è´¥.\n");
 		return false;
 	}
 
@@ -418,7 +418,7 @@ bool vmm_init()
 	KeStallExecutionProcessor(50);
 
 
-	//ÎÒÃÇĞèÒªÔÚµÍÓÚ DISPATCH_LEVEL µÄ IRQL ÏÂÔËĞĞ£¬ÒÔ±ã KeSetSystemAffinityThreadEx Á¢¼´ÉúĞ§
+	//æˆ‘ä»¬éœ€è¦åœ¨ä½äº DISPATCH_LEVEL çš„ IRQL ä¸‹è¿è¡Œï¼Œä»¥ä¾¿ KeSetSystemAffinityThreadEx ç«‹å³ç”Ÿæ•ˆ
 	//NT_ASSERT(KeGetCurrentIrql() <= APC_LEVEL);
 
 	//// virtualize every cpu
@@ -430,7 +430,7 @@ bool vmm_init()
 	//	if (!initalize_vcpu(iter)) {
 	//		// TODO: handle this bruh -_-
 	//		KeRevertToUserAffinityThreadEx(orig_affinity);
-	//		outDebug("initalize_vcpuÊ§°Ü.\n");
+	//		outDebug("initalize_vcpuå¤±è´¥.\n");
 	//		return false;
 	//	}
 

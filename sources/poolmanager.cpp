@@ -1,4 +1,4 @@
-#include "Driver.h"
+ï»¿#include "Driver.h"
 #include "poolmanager.h"
 #include "Globals.h"
 #include "mtrr.h"
@@ -11,7 +11,7 @@ namespace pool_manager
 {
     /// <summary>
     /// Allocate pools and add them to pool table
-    /// ·ÖÅä³Ø²¢½«ÆäÌí¼Óµ½³Ø±íÖĞ
+    /// åˆ†é…æ± å¹¶å°†å…¶æ·»åŠ åˆ°æ± è¡¨ä¸­
     /// </summary>
     /// <param name="size">Size of pool</param>
     /// <param name="count">Number of pools to allocate</param>
@@ -39,7 +39,7 @@ namespace pool_manager
             RtlSecureZeroMemory(single_pool->address, size);
 
             single_pool->intention = intention;
-            single_pool->is_busy = false;  //½«ÄÚ´æ±êÊ¶ÎªÎ´Ê¹ÓÃ
+            single_pool->is_busy = false;  //å°†å†…å­˜æ ‡è¯†ä¸ºæœªä½¿ç”¨
             single_pool->size = size;
 
             InsertTailList(g_vmm_context.pool_manager->list_of_allocated_pools, &(single_pool->pool_list));
@@ -76,7 +76,7 @@ namespace pool_manager
     }
 
     /// <summary>
-    /// ·ÖÅäËùÓĞÇëÇóµÄ³Ø
+    /// åˆ†é…æ‰€æœ‰è¯·æ±‚çš„æ± 
     /// </summary>
     /// <returns></returns>
     bool perform_allocation()
@@ -121,7 +121,7 @@ namespace pool_manager
 
     /// <summary>
     /// Initalize pool manager struct and preallocate pools
-    /// ³õÊ¼»¯³Ø¹ÜÀíÆ÷½á¹¹²¢Ô¤·ÖÅä³Ø
+    /// åˆå§‹åŒ–æ± ç®¡ç†å™¨ç»“æ„å¹¶é¢„åˆ†é…æ± 
     /// </summary>
     /// <returns> status </returns>
     bool initialize()
@@ -188,7 +188,7 @@ namespace pool_manager
     }
     /// <summary>
     /// Free all allocted pools
-    /// ÊÍ·ÅËùÓĞÒÑ·ÖÅäµÄ³Ø
+    /// é‡Šæ”¾æ‰€æœ‰å·²åˆ†é…çš„æ± 
     /// </summary>
     void uninitialize()
     {

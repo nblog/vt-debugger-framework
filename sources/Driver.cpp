@@ -1,4 +1,4 @@
-#include "Driver.h"
+ï»¿#include "Driver.h"
 #include "poolmanager.h"
 #include "Globals.h"
 #include "mtrr.h"
@@ -15,10 +15,10 @@
 #include "string.h"
 #include "CreateDriver.h"
 
-//¿ØÖÆÂëÓëÓÃ»§²ã±£³ÖÒ»ÖÂ
-#define ReadCtl  CTL_CODE(FILE_DEVICE_UNKNOWN,0x803,METHOD_BUFFERED,FILE_ANY_ACCESS) //¶Á¿ØÖÆÂë
-#define WriteCtl CTL_CODE(FILE_DEVICE_UNKNOWN,0x804,METHOD_BUFFERED,FILE_ANY_ACCESS) //Ğ´¿ØÖÆÂë
-#define RWCtl    CTL_CODE(FILE_DEVICE_UNKNOWN,0x805,METHOD_BUFFERED,FILE_ANY_ACCESS) //¶ÁĞ´¿ØÖÆÂë
+//æ§åˆ¶ç ä¸ç”¨æˆ·å±‚ä¿æŒä¸€è‡´
+#define ReadCtl  CTL_CODE(FILE_DEVICE_UNKNOWN,0x803,METHOD_BUFFERED,FILE_ANY_ACCESS) //è¯»æ§åˆ¶ç 
+#define WriteCtl CTL_CODE(FILE_DEVICE_UNKNOWN,0x804,METHOD_BUFFERED,FILE_ANY_ACCESS) //å†™æ§åˆ¶ç 
+#define RWCtl    CTL_CODE(FILE_DEVICE_UNKNOWN,0x805,METHOD_BUFFERED,FILE_ANY_ACCESS) //è¯»å†™æ§åˆ¶ç 
 
 enum vm_call_reasons
 {
@@ -61,19 +61,19 @@ VOID Unload(PDRIVER_OBJECT DriverObject)
 
     DbgPrint("zxxx unload  %p \n", DriverObject);
 
-    //ÏÈÉ¾³ı·ûºÅÁ´½Ó
-    //ÔÙÉ¾³ıÇı¶¯Éè±¸
+    //å…ˆåˆ é™¤ç¬¦å·é“¾æ¥
+    //å†åˆ é™¤é©±åŠ¨è®¾å¤‡
     if (DriverObject->DeviceObject)
     {
         UNICODE_STRING uzSymbolName;
         RtlInitUnicodeString(&uzSymbolName, L"\\??\\MemProc");
         IoDeleteSymbolicLink(&uzSymbolName);
         IoDeleteDevice(DriverObject->DeviceObject);
-        DbgPrint("zxxx É¾³ı·ûºÅÁ´½Ó \n");
-        DbgPrint("zxxx É¾³ıÇı¶¯Éè±¸ \n");
+        DbgPrint("zxxx åˆ é™¤ç¬¦å·é“¾æ¥ \n");
+        DbgPrint("zxxx åˆ é™¤é©±åŠ¨è®¾å¤‡ \n");
     }
 
-    DbgPrint("[memproc_core] Çı¶¯Ğ¶ÔØ³É¹¦\n");
+    DbgPrint("[memproc_core] é©±åŠ¨å¸è½½æˆåŠŸ\n");
 }
 
 bool vmcall_internal(PVOID vmcallinfo)
@@ -83,46 +83,46 @@ bool vmcall_internal(PVOID vmcallinfo)
     __try 
     {
         boSuccess = __vm_call(((PVMCALLINFO)vmcallinfo)->command, (unsigned __int64)vmcallinfo, 0, 0);
-        DbgPrint("[memproc_core] Ö´ĞĞvmcall ½á¹û-> 0x%x", boSuccess);
+        DbgPrint("[memproc_core] æ‰§è¡Œvmcall ç»“æœ-> 0x%x", boSuccess);
     }
     __except (ecode = GetExceptionCode(), 1) 
     {
-        DbgPrint("[memproc_core] Ö´ĞĞvmcallÊ±Óöµ½ÁË´íÎó (error: 0x%X)", ecode);
+        DbgPrint("[memproc_core] æ‰§è¡Œvmcallæ—¶é‡åˆ°äº†é”™è¯¯ (error: 0x%X)", ecode);
     }
     return boSuccess;
 }
 
-//´´½¨Çı¶¯¶ÔÏó²¢°ó¶¨·ûºÅÁ´½Ó
+//åˆ›å»ºé©±åŠ¨å¯¹è±¡å¹¶ç»‘å®šç¬¦å·é“¾æ¥
 NTSTATUS CreateDevice(PDRIVER_OBJECT driver)
 {
     NTSTATUS status;
-    UNICODE_STRING MyDriver;	//Çı¶¯Ãû³Æ
-    PDEVICE_OBJECT device;		//Çı¶¯Éè±¸
-    RtlInitUnicodeString(&MyDriver, L"\\DEVICE\\MemProc");//³õÊ¼»¯Çı¶¯Ãû³Æ
+    UNICODE_STRING MyDriver;	//é©±åŠ¨åç§°
+    PDEVICE_OBJECT device;		//é©±åŠ¨è®¾å¤‡
+    RtlInitUnicodeString(&MyDriver, L"\\DEVICE\\MemProc");//åˆå§‹åŒ–é©±åŠ¨åç§°
 
-    //ÔÚÇı¶¯¶ÔÏóÉÏ´´½¨Çı¶¯Éè±¸
+    //åœ¨é©±åŠ¨å¯¹è±¡ä¸Šåˆ›å»ºé©±åŠ¨è®¾å¤‡
     status = IoCreateDevice(driver, sizeof(driver->DriverExtension), &MyDriver, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &device);
 
     if (status == STATUS_SUCCESS)
     {
-        KdPrint(("zxxx Çı¶¯Éè±¸¶ÔÏó´´½¨³É¹¦ \n"));
-        //´´½¨·ûºÏÁ´½Ó
+        KdPrint(("zxxx é©±åŠ¨è®¾å¤‡å¯¹è±¡åˆ›å»ºæˆåŠŸ \n"));
+        //åˆ›å»ºç¬¦åˆé“¾æ¥
         UNICODE_STRING uzSymbolName;
-        RtlInitUnicodeString(&uzSymbolName, L"\\??\\MemProc"); //³õÊ¼»¯·ûºÅÁ´½Ó ·ûºÅÁ´½Ó¸ñÊ½ L"\\??\\Ãû×Ö
-        //ÎªÇı¶¯Éè±¸°ó¶¨·ûºÅÁ´½Ó    ºóĞø²»»áÊ¹ÓÃÇı¶¯¶ÔÏóÓëÄÚºË½»»»£¬¶øÊÇÊ¹ÓÃ·ûºÅÁ´½ÓÓëÄÚºË½»»»
+        RtlInitUnicodeString(&uzSymbolName, L"\\??\\MemProc"); //åˆå§‹åŒ–ç¬¦å·é“¾æ¥ ç¬¦å·é“¾æ¥æ ¼å¼ L"\\??\\åå­—
+        //ä¸ºé©±åŠ¨è®¾å¤‡ç»‘å®šç¬¦å·é“¾æ¥    åç»­ä¸ä¼šä½¿ç”¨é©±åŠ¨å¯¹è±¡ä¸å†…æ ¸äº¤æ¢ï¼Œè€Œæ˜¯ä½¿ç”¨ç¬¦å·é“¾æ¥ä¸å†…æ ¸äº¤æ¢
         status = IoCreateSymbolicLink(&uzSymbolName, &MyDriver);
         if (status == STATUS_SUCCESS)
         {
-            KdPrint(("zxxx ·ûºÅÁ´½Ó´´½¨³É¹¦ %wZ \n", &uzSymbolName));
+            KdPrint(("zxxx ç¬¦å·é“¾æ¥åˆ›å»ºæˆåŠŸ %wZ \n", &uzSymbolName));
         }
         else
         {
-            KdPrint(("zxxx ·ûºÅÁ´½Ó´´½¨Ê§°Ü %wZ \n", &uzSymbolName));
+            KdPrint(("zxxx ç¬¦å·é“¾æ¥åˆ›å»ºå¤±è´¥ %wZ \n", &uzSymbolName));
         }
     }
     else
     {
-        KdPrint(("zxxx Çı¶¯Éè±¸¶ÔÏó´´½¨Ê§°Ü \n"));
+        KdPrint(("zxxx é©±åŠ¨è®¾å¤‡å¯¹è±¡åˆ›å»ºå¤±è´¥ \n"));
         IoDeleteDevice(device);
     }
     return status;
@@ -132,26 +132,26 @@ NTSTATUS CreateDevice(PDRIVER_OBJECT driver)
 void IRP_IO_Read(PIRP pirp)
 {
     char* buff = (char*)pirp->AssociatedIrp.SystemBuffer;
-    //»ñÈ¡R3´«À´µÄ²ÎÊı£¨¿ØÖÆÂë£©
+    //è·å–R3ä¼ æ¥çš„å‚æ•°ï¼ˆæ§åˆ¶ç ï¼‰
     PIO_STACK_LOCATION irpStack = IoGetCurrentIrpStackLocation(pirp);
-    //½«R0¶ÁÈ¡µ½µÄÊı¾İĞ´Èëµ½Ïò¹²Ïí»º³åÇø
+    //å°†R0è¯»å–åˆ°çš„æ•°æ®å†™å…¥åˆ°å‘å…±äº«ç¼“å†²åŒº
     char R0returnbuf[] = "zxxx R0 read data \n";
     ULONG len = sizeof(R0returnbuf);
 
     memcpy(buff, R0returnbuf,len);
     KdPrint(("zxxx IRP_IO_Read read data to SystemBuffer \n"));
 
-    //Ã¿´ÎIRPÖ´ĞĞÍêÁË ÒªÖ´ĞĞÏÂÃæÈıĞĞ ×÷Îª·µ»Ø½á¹û
+    //æ¯æ¬¡IRPæ‰§è¡Œå®Œäº† è¦æ‰§è¡Œä¸‹é¢ä¸‰è¡Œ ä½œä¸ºè¿”å›ç»“æœ
     pirp->IoStatus.Status = STATUS_SUCCESS;
-    pirp->IoStatus.Information = len;  //¹²Ïí»º³åÇø·µ»ØµÄ³¤¶È
+    pirp->IoStatus.Information = len;  //å…±äº«ç¼“å†²åŒºè¿”å›çš„é•¿åº¦
     IoCompleteRequest(pirp, IO_NO_INCREMENT);
 }
 
-//´«ÈëÇı¶¯Éè±¸µÄIRPÊÂ¼ş
+//ä¼ å…¥é©±åŠ¨è®¾å¤‡çš„IRPäº‹ä»¶
 NTSTATUS IRP_CALL(PDEVICE_OBJECT device, PIRP pirp)
 {
     device;
-    DbgPrint(("zxxx ·¢ÉúIRPÊÂ¼ş ½øÈëIRPº¯Êı \n"));
+    DbgPrint(("zxxx å‘ç”ŸIRPäº‹ä»¶ è¿›å…¥IRPå‡½æ•° \n"));
     PIO_STACK_LOCATION irpStackL;
     irpStackL = IoGetCurrentIrpStackLocation(pirp);
 
@@ -170,39 +170,39 @@ NTSTATUS IRP_CALL(PDEVICE_OBJECT device, PIRP pirp)
     case IRP_MJ_DEVICE_CONTROL:
     {
         DbgPrint(("zxxx IRP_MJ_DEVICE_CONTROL \n"));
-        //È¡µ½µÄR3µÄ¿ØÖÆÂë
+        //å–åˆ°çš„R3çš„æ§åˆ¶ç 
         UINT32 CtlCode = irpStackL->Parameters.DeviceIoControl.IoControlCode;
-        DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL R0¿ØÖÆÂë:%X \n", CtlCode);
+        DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL R0æ§åˆ¶ç :%X \n", CtlCode);
 
 
         if (CtlCode == ReadCtl)
         {
-            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL ReadCtl R0¿ØÖÆÂë:%X \n", CtlCode);
-            IRP_IO_Read(pirp); //ÕâÀïĞ´Èëµ½¹²Ïí»º³å¼Á¼´¿É£¬´òÓ¡R3·ÃÎÊ¹²Ïí»º³åÇø´òÓ¡
+            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL ReadCtl R0æ§åˆ¶ç :%X \n", CtlCode);
+            IRP_IO_Read(pirp); //è¿™é‡Œå†™å…¥åˆ°å…±äº«ç¼“å†²å‰‚å³å¯ï¼Œæ‰“å°R3è®¿é—®å…±äº«ç¼“å†²åŒºæ‰“å°
             return STATUS_SUCCESS;
         }
         else if (CtlCode == WriteCtl)
         {
-            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL WriteCtl R0¿ØÖÆÂë:%X \n", CtlCode);
-            //È¡³öR3»º³åÇøµÄÊı¾İ
-            //¸ù¾İ¿ØÖÆ´úÂëÀ´Ñ¡ÔñÊ¹ÓÃAssociatedIrp.SystemBufferµÄ¶Á»º³åÇø»¹ÊÇĞ´»º³åÇø
+            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL WriteCtl R0æ§åˆ¶ç :%X \n", CtlCode);
+            //å–å‡ºR3ç¼“å†²åŒºçš„æ•°æ®
+            //æ ¹æ®æ§åˆ¶ä»£ç æ¥é€‰æ‹©ä½¿ç”¨AssociatedIrp.SystemBufferçš„è¯»ç¼“å†²åŒºè¿˜æ˜¯å†™ç¼“å†²åŒº
             char* R3buff = (char*)pirp->AssociatedIrp.SystemBuffer;
-            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL R0»º³åÇø:%s \n", R3buff);
+            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL R0ç¼“å†²åŒº:%s \n", R3buff);
 
         }
         else if (CtlCode == RWCtl)
         {
-            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL RWCtl R0¿ØÖÆÂë:%X \n", CtlCode);
+            DbgPrint("zxxx IRP_MJ_DEVICE_CONTROL RWCtl R0æ§åˆ¶ç :%X \n", CtlCode);
         }
         break;
     }
     }
 
-    //×¢Òâ Ö»ÒªpirpÕâ¸ö¶ÔÏó·¢Éú±ä»¯ ¾ÍÒª¸ú×ÅÏÂÃæÕâÈıĞĞ 
+    //æ³¨æ„ åªè¦pirpè¿™ä¸ªå¯¹è±¡å‘ç”Ÿå˜åŒ– å°±è¦è·Ÿç€ä¸‹é¢è¿™ä¸‰è¡Œ 
     pirp->IoStatus.Status = STATUS_SUCCESS;
     pirp->IoStatus.Information = 4;
     IoCompleteRequest(pirp, IO_NO_INCREMENT);
-    DbgPrint(("zxxx ½áÊøIRPÊÂ¼ş Àë¿ªIRPº¯Êı \n"));
+    DbgPrint(("zxxx ç»“æŸIRPäº‹ä»¶ ç¦»å¼€IRPå‡½æ•° \n"));
     return STATUS_SUCCESS;
 }
 
@@ -216,7 +216,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     NTSTATUS nStatus = STATUS_SUCCESS;
     if (!hv::virtualization_support())
     {
-        DbgPrint("[memproc_core] ´Ë´¦ÀíÆ÷²»Ö§³ÖVT-x.\n");
+        DbgPrint("[memproc_core] æ­¤å¤„ç†å™¨ä¸æ”¯æŒVT-x.\n");
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -225,7 +225,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     {
         hv::disable_vmx_operation();
         free_vmm_context();
-        DbgPrint("[memproc_core] Æô¶¯ĞéÄâ»úÊ§°Ü.");
+        DbgPrint("[memproc_core] å¯åŠ¨è™šæ‹Ÿæœºå¤±è´¥.");
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -241,15 +241,15 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     }
     else
     {
-        DbgPrint("[memproc_core] ÕÒ²»µ½CR3\n");
+        DbgPrint("[memproc_core] æ‰¾ä¸åˆ°CR3\n");
     }
-    DbgPrint("[memproc_core] Çı¶¯¼ÓÔØÍê³É\n");
+    DbgPrint("[memproc_core] é©±åŠ¨åŠ è½½å®Œæˆ\n");
 
-    DriverObject->MajorFunction[IRP_MJ_CREATE]          = IRP_CALL;	  //Ö¸¶¨IRPÊÂ¼şº¯Êı
-    DriverObject->MajorFunction[IRP_MJ_CLOSE]           = IRP_CALL;   //Ö¸¶¨IRPÊÂ¼şº¯Êı
-    DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL]  = IRP_CALL;   //Ö¸¶¨IRPÊÂ¼şº¯Êı
+    DriverObject->MajorFunction[IRP_MJ_CREATE]          = IRP_CALL;	  //æŒ‡å®šIRPäº‹ä»¶å‡½æ•°
+    DriverObject->MajorFunction[IRP_MJ_CLOSE]           = IRP_CALL;   //æŒ‡å®šIRPäº‹ä»¶å‡½æ•°
+    DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL]  = IRP_CALL;   //æŒ‡å®šIRPäº‹ä»¶å‡½æ•°
     Initialize_SystemHooks();
-    //´´½¨Çı¶¯Éè±¸
+    //åˆ›å»ºé©±åŠ¨è®¾å¤‡
     CreateDevice(DriverObject);
 	DriverObject->DriverUnload = Unload;
     return nStatus;
@@ -279,7 +279,7 @@ bool InitOffset(PWINDOWS_STRUCT vmcallinfo)
 
     if (sizeof(WINDOWS_STRUCT) != hv::read_guest_virtual_memory(vmcallinfo, &tmp_vmcallinfo, sizeof(WINDOWS_STRUCT)))
     {
-        //¶ÁÈ¡Êı¾İ¿ÉÄÜ²»ÍêÕû
+        //è¯»å–æ•°æ®å¯èƒ½ä¸å®Œæ•´
         return false;
     }
 
@@ -304,7 +304,7 @@ bool SetBreakpoint(PVT_BREAK_POINT vmcallinfo, unsigned __int64 Type)
 
     if (sizeof(VT_BREAK_POINT) != hv::read_guest_virtual_memory(vmcallinfo, &tmp_vmcallinfo, sizeof(VT_BREAK_POINT)))
     {
-        //¶ÁÈ¡Êı¾İ¿ÉÄÜ²»ÍêÕû
+        //è¯»å–æ•°æ®å¯èƒ½ä¸å®Œæ•´
         return false;
     }
 
@@ -315,7 +315,7 @@ bool SetBreakpoint(PVT_BREAK_POINT vmcallinfo, unsigned __int64 Type)
 
         if (sizeof(VT_BREAK_POINT) != hv::write_guest_virtual_memory(vmcallinfo, &tmp_vmcallinfo, sizeof(VT_BREAK_POINT)))
         {
-            //Ğ´ÈëÊı¾İ¿ÉÄÜ²»ÍêÕû
+            //å†™å…¥æ•°æ®å¯èƒ½ä¸å®Œæ•´
             return false;
         }
         return true;
@@ -326,7 +326,7 @@ bool SetBreakpoint(PVT_BREAK_POINT vmcallinfo, unsigned __int64 Type)
 
         if (sizeof(VT_BREAK_POINT) != hv::write_guest_virtual_memory(vmcallinfo, &tmp_vmcallinfo, sizeof(VT_BREAK_POINT)))
         {
-            //Ğ´ÈëÊı¾İ¿ÉÄÜ²»ÍêÕû
+            //å†™å…¥æ•°æ®å¯èƒ½ä¸å®Œæ•´
             return false;
         }
     }
@@ -339,7 +339,7 @@ bool RemoveBreakpoint(PVT_BREAK_POINT vmcallinfo)
 
     if (sizeof(VT_BREAK_POINT) != hv::read_guest_virtual_memory(vmcallinfo, &tmp_vmcallinfo, sizeof(VT_BREAK_POINT)))
     {
-        //¶ÁÈ¡Êı¾İ¿ÉÄÜ²»ÍêÕû
+        //è¯»å–æ•°æ®å¯èƒ½ä¸å®Œæ•´
         return false;
     }
 

@@ -1,4 +1,4 @@
-#pragma warning( disable : 4201)
+ï»¿#pragma warning( disable : 4201)
 #include <ntifs.h>
 #include "ntimage.h"
 #include <array>
@@ -150,7 +150,7 @@ uint8_t* FindObpReferenceObjectByHandleWithTag()
     return nullptr;
 }
 
-//ÅĞ¶ÏUNICODE×Ö·û´®ÊÇ·ñÎª¿Õ
+//åˆ¤æ–­UNICODEå­—ç¬¦ä¸²æ˜¯å¦ä¸ºç©º
 BOOLEAN StrIsValid2(UNICODE_STRING filePath)
 {
     if (filePath.Length == 0)
@@ -159,7 +159,7 @@ BOOLEAN StrIsValid2(UNICODE_STRING filePath)
         return TRUE;
 }
 
-//»ñÈ¡ÎÄ¼şÃû³Æ
+//è·å–æ–‡ä»¶åç§°
 bool GetModuleFileName(OUT WCHAR* fileName, IN PUNICODE_STRING filePath)
 {
     if (filePath)
@@ -182,7 +182,7 @@ bool GetModuleFileName(OUT WCHAR* fileName, IN PUNICODE_STRING filePath)
             }
             else
             {
-                //Ä¬ÈÏÕû¸öÂ·¾¶ÊÇÎÄ¼şÃû
+                //é»˜è®¤æ•´ä¸ªè·¯å¾„æ˜¯æ–‡ä»¶å
                 wcsncpy(fileName, &filePath->Buffer[i], Full_length);
                 return true;
             }
@@ -191,7 +191,7 @@ bool GetModuleFileName(OUT WCHAR* fileName, IN PUNICODE_STRING filePath)
     return false;
 }
 
-//»ñÈ¡½ø³ÌÃû
+//è·å–è¿›ç¨‹å
 NTSTATUS GetProcessName(IN PEPROCESS Process, OUT WCHAR* fileName)
 {
     NTSTATUS Status;

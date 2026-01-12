@@ -17,7 +17,7 @@
     <ClCompile Include="sources\Driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sources\EPT.cpp">
+    <ClCompile Include="sources\ept.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sources\gdt.cpp">
