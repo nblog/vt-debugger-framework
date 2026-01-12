@@ -1,8 +1,8 @@
 ﻿#pragma warning( disable : 4201)
 #include <ntifs.h>
-#include "ntimage.h"
-#include <array>
 #include <ntddk.h>
+#include <ntimage.h>
+#include <array>
 #include "Driver.h"
 
 #include "HookHelper.h"
@@ -11,7 +11,7 @@
 
 PWCHAR PassProcessList[12] = 
 {
-    _T("system"),
+    _T("System"),
     _T("Registry"),
     _T("csrss.exe"),
     _T("svchost.exe"),
@@ -27,7 +27,7 @@ PWCHAR PassProcessList[12] =
 
 PCWCH protected_process_list[] = 
 {
-    L"cheatengine", L"HyperCE", L"x64dbg", L"x32dbg", L"ida", L"windbg"
+    L"HyperCE", L"cheatengine", L"x64dbg", L"x32dbg", L"ida", L"windbg", L"DbgX.Shell"
 };
 
 typedef struct _SYSTEM_PROCESS_INFORMATION {
@@ -98,13 +98,30 @@ NTSTATUS NTAPI HookedNtOpenProcess(PHANDLE ProcessHandle, ACCESS_MASK DesiredAcc
 }
 
 
+// Case-insensitive substring search
+PCWCH wcsistr(PCWCH str, PCWCH substr)
+{
+    if (str == nullptr || substr == nullptr)
+        return nullptr;
+
+    SIZE_T substr_len = wcslen(substr);
+    if (substr_len == 0)
+        return str;
+
+    for (; *str; str++) {
+        if (_wcsnicmp(str, substr, substr_len) == 0)
+            return str;
+    }
+    return nullptr;
+}
+
 bool StringArrayContainsW(PCWCH str, PCWCH* arr, SIZE_T len)
 {
     if (str == nullptr || arr == nullptr || len == 0)
         return false;
 
     for (SIZE_T i = 0; i < len; i++) {
-        if (wcsstr(str, arr[i]) != nullptr)
+        if (wcsistr(str, arr[i]) != nullptr)
             return true;
     }
     return false;

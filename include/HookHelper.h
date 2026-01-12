@@ -2,9 +2,9 @@
 
 
 #include <ntifs.h>
-#include "ntimage.h"
-#include <array>
 #include <ntddk.h>
+#include <ntimage.h>
+#include <array>
 #include "Driver.h"
 #include "HookSystem.h"
 #include "hypervisor_gateway.h"
