@@ -2,7 +2,7 @@
 #include "poolmanager.h"
 #include "Globals.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "msr.h"
 #include "spinlock.h"
 #include "AllocateMem.h"

@@ -2,7 +2,7 @@
 #include "poolmanager.h"
 #include "Globals.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "vmexit_handler.h"
 #include "idt.h"
 

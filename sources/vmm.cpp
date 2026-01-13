@@ -4,7 +4,7 @@
 #include "cpuid.h"
 #include "ntapi.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "AllocateMem.h"
 #include "msr.h"
 #include "vmcs.h"

@@ -9,7 +9,7 @@
 #include "invalid_ept.h"
 #include "msr.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "AsmCallset.h"
 #include "hypervisor_routines.h"
 #include "vmexit_handler.h"

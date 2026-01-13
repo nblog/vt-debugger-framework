@@ -108,7 +108,7 @@
     <ClInclude Include="include\drx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\EPT.h">
+    <ClInclude Include="include\ept.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\exception.h">

@@ -7,7 +7,7 @@
 #include "AsmCallset.h"
 #include "vm_context.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "vmcs.h"
 #include "hypervisor_routines.h"
 

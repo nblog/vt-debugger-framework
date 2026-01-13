@@ -8,7 +8,7 @@
 #include "msr.h"
 #include "spinlock.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "hypervisor_routines.h"
 #include "vmcs.h"
 #include "vmexit_handler.h"

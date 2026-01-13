@@ -2,7 +2,7 @@
 #include "poolmanager.h"
 #include "Globals.h"
 #include "mtrr.h"
-#include "EPT.h"
+#include "ept.h"
 #include "hypervisor_routines.h"
 #include "vmm.h"
 #include "hypervisor_gateway.h"
