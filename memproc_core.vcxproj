@@ -79,7 +79,7 @@
       <EntryPointSymbol>CustomDriverEntry</EntryPointSymbol>
     </Link>
     <DriverSign>
-      <AdditionalOptions>/fd SHA256 </AdditionalOptions>
+      <AdditionalOptions>/fd sha256 %(AdditionalOptions)</AdditionalOptions>
     </DriverSign>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
