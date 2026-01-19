@@ -231,7 +231,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
 
     #define DIRECTORY_TABLE_BASE 0x028
     PEPROCESS Peprocess = NULL;
-    NTSTATUS status = PsLookupProcessByProcessId((HANDLE)14496, &Peprocess);
+    NTSTATUS status = PsLookupProcessByProcessId((HANDLE)1337, &Peprocess);
     if (Peprocess != NULL)
     {
         ULONG64 cr3 = *(ULONG64*)((UCHAR*)Peprocess + DIRECTORY_TABLE_BASE);

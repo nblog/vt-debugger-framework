@@ -397,8 +397,8 @@ VOID VtLoadProc( _In_ struct _KDPC* Dpc, _In_opt_ PVOID DeferredContext, _In_opt
 	UNREFERENCED_PARAMETER(Dpc);
 	UNREFERENCED_PARAMETER(DeferredContext);
 
-	//ULONG uCpuNumber = KeGetCurrentProcessorNumber();
-	//initalize_vcpu(uCpuNumber);
+	ULONG uCpuNumber = KeGetCurrentProcessorNumber();
+	initalize_vcpu(uCpuNumber);
 
 	KeSignalCallDpcSynchronize(SystemArgument2);
 	KeSignalCallDpcDone(SystemArgument1);
